@@ -188,7 +188,7 @@ it does, but HOW it works in flywheel
 ### Description
 
 This gear is run at either the `Subject` or the `Session` level. It downloads the data for that subject/session and then runs the
-`recon-all-clinical` pipeline on it.
+`recon-any` pipeline on it.
 
 After the pipeline is run, the output folder is zipped and saved into the analysis
 container.
@@ -223,7 +223,7 @@ Description of workflow
    1. file classifier
    2. dcm2niix
    3. Multi-Resolution Reconstruction (MRR) {for Hyperfine Swoop data}
-3. Run the recon-all-clinical gear
+3. Run the recon-any gear
 4. Output data is saved in the container
 5. 
 ### Use Cases
