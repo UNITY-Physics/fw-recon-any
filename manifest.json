@@ -26,7 +26,7 @@
     },
     "gear-builder": {
       "category": "analysis",
-      "image": "flywheel/recon-any:0.4.0"
+      "image": "flywheel/recon-any:0.4.2"
     },
     "kcl-app-binary": "app/main.sh",
     "kcl-app-modalities": [
@@ -50,35 +50,37 @@
   "environment": {
     "CONDA_DIR": "/opt/conda",
     "FLYWHEEL": "/flywheel/v0",
-    "GPG_KEY": "E3FF2839C048B25C084DEBE9B26995E310250568",
+    "FMRI_ANALYSIS_DIR": "/usr/local/freesurfer/fsfast",
+    "FREESURFER": "/usr/local/freesurfer",
+    "FREESURFER_HOME": "/usr/local/freesurfer",
+    "FSFAST_HOME": "/usr/local/freesurfer/fsfast",
+    "FSF_OUTPUT_FORMAT": "nii.gz",
+    "FSLDIR": "/opt/conda",
+    "FS_LICENSE": "/usr/local/freesurfer/.license",
+    "FS_OVERRIDE": "0",
+    "FUNCTIONALS_DIR": "/usr/local/freesurfer/sessions",
+    "GPG_KEY": "A035C8C19219BA821ECEA86B64E628F8D684696D",
     "LANG": "C.UTF-8",
-    "PATH": "/opt/conda/bin:/usr/local/freesurfer/bin:/usr/local/freesurfer/fsfast/bin:/usr/local/freesurfer/tktools:/usr/local/freesurfer/mni/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+    "LOCAL_DIR": "/usr/local/freesurfer/local",
+    "MINC_BIN_DIR": "/usr/local/freesurfer/mni/bin",
+    "MINC_LIB_DIR": "/usr/local/freesurfer/mni/lib",
+    "MNI_DATAPATH": "/usr/local/freesurfer/mni/data",
+    "MNI_DIR": "/usr/local/freesurfer/mni",
+    "MNI_PERL5LIB": "/usr/local/freesurfer/mni/share/perl5",
+    "OS": "Linux",
+    "PATH": "/usr/local/freesurfer/bin:/usr/local/freesurfer/fsfast/bin:/usr/local/freesurfer/tktools:/usr/local/freesurfer/mni/bin:/usr/local/bin:/usr/bin:/bin",
+    "PERL5LIB": "/usr/local/freesurfer/mni/share/perl5",
+    "PWD": "/flywheel/v0",
+    "PYTHONPATH": "/flywheel/v0:",
     "PYTHON_GET_PIP_SHA256": "fa6f3fb93cce234cd4e8dd2beb54a51ab9c247653b52855a48dd44e6b21ff28b",
     "PYTHON_GET_PIP_URL": "https://github.com/pypa/get-pip/raw/c20b0cfd643cd4a19246ccf204e2997af70f6b21/public/get-pip.py",
     "PYTHON_PIP_VERSION": "21.2.3",
-    "PYTHON_VERSION": "3.8.11",
-    "FREESURFER": "/usr/local/freesurfer",
-    "FREESURFER_HOME": "/usr/local/freesurfer",
-    "container": "oci",
-    "_": "/usr/bin/printenv",
+    "PYTHON_SHA256": "c8f4a596572201d81dd7df91f70e177e19a70f1d489968b54b5fbbf29a97c076",
+    "PYTHON_VERSION": "3.10.19",
     "SHLVL": "0",
-    "PWD": "/flywheel/v0",
-    "OS": "Linux",
     "SUBJECTS_DIR": "/usr/local/freesurfer/subjects",
-    "MNI_DIR": "/usr/local/freesurfer/mni",
-    "FSFAST_HOME": "/usr/local/freesurfer/fsfast",
-    "FSF_OUTPUT_FORMAT": "nii.gz",
-    "LOCAL_DIR": "/usr/local/freesurfer/local",
-    "FMRI_ANALYSIS_DIR": "/usr/local/freesurfer/fsfast",
-    "FUNCTIONALS_DIR": "/usr/local/freesurfer/sessions",
-    "MNI_PERL5LIB": "/usr/local/freesurfer/mni/share/perl5",
-    "MINC_BIN_DIR": "/usr/local/freesurfer/mni/bin",
-    "PERL5LIB": "/usr/local/freesurfer/mni/share/perl5",
-    "FS_OVERRIDE": "0",
-    "MINC_LIB_DIR": "/usr/local/freesurfer/mni/lib",
-    "MNI_DATAPATH": "/usr/local/freesurfer/mni/data",
-    "FSLDIR": "/opt/conda",
-    "PYTHONPATH": "/flywheel/v0:"
+    "_": "/usr/bin/printenv",
+    "container": "oci"
   },
   "inputs": {
     "api-key": {
@@ -87,15 +89,15 @@
     },
     "input": {
       "base": "file",
-      "description": "input file (usually isotropic reconstruction)",
+      "description": "input file",
       "optional": false
     }
   },
   "label": "recon-any",
   "license": "MIT",
-  "maintainer": "Niall Bourke <niall.bourke@kcl.ac.uk>",
+  "maintainer": "Hajer Karoui <hajer.karoui@kcl.ac.uk>",
   "name": "recon-any",
   "source": "https://surfer.nmr.mgh.harvard.edu/fswiki/recon-any",
   "url": "https://surfer.nmr.mgh.harvard.edu/",
-  "version": "0.4.0"
+  "version": "0.4.2"
 }

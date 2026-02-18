@@ -7,8 +7,8 @@
 ##############################################################################
 # Define directory names and containers
 
-subject=$1
-session=$2
+SUBJ_ID=$1
+SES_ID=$2
 base_filename=$3
 
 FLYWHEEL_BASE=/flywheel/v0
@@ -87,28 +87,31 @@ fi
 if [[ -e $input_file ]]; then
   echo "Running recon-any..."
   
-  tcsh /usr/local/freesurfer/bin/recon-any.sh $input_file $base_filename 4 $WORKDIR
+  tcsh /usr/local/freesurfer/bin/recon-any.sh -i $input_file -subjid $SUBJ_ID -threads 4 -side both -sdir $WORKDIR
   recon_all_clinical_exit_status=$?
 fi
 
 # Step 3: Copy output files to the output directory
 #mri_convert $WORKDIR/$base_filename/mri/synthseg.mgz $OUTPUT_DIR/synthseg.nii
-cp $WORKDIR/$base_filename/stats/synthseg.vol.csv $WORKDIR/synthseg.vol.csv
-cp $WORKDIR/$base_filename/stats/synthseg.qc.csv $WORKDIR/synthseg.qc.csv
-mri_convert --out_orientation RAS $WORKDIR/$base_filename/mri/synthSR.mgz $WORKDIR/synthSR.nii.gz
-mri_convert --out_orientation RAS $WORKDIR/$base_filename/mri/aparc+aseg.mgz $WORKDIR/aparc+aseg.nii.gz
-zip -r $OUTPUT_DIR/$base_filename.zip $WORKDIR/$base_filename
+cp $WORKDIR/$SUBJ_ID/stats/synthseg.vol.csv $WORKDIR/synthseg.vol.csv
+cp $WORKDIR/$SUBJ_ID/stats/synthseg.qc.csv $WORKDIR/synthseg.qc.csv
+mri_convert --out_orientation RAS $WORKDIR/$SUBJ_ID/mri/synthSR.mgz $WORKDIR/synthSR.nii.gz
+mri_convert --out_orientation RAS $WORKDIR/$SUBJ_ID/mri/aparc+aseg.mgz $WORKDIR/aparc+aseg.nii.gz
+zip -r $OUTPUT_DIR/$SUBJ_ID.zip $WORKDIR/$SUBJ_ID
 
 
 # Step 4: Extract cortical thickness measures
 # Set SUBJECTS_DIR to the work directory
 export SUBJECTS_DIR=$WORKDIR
-aparcstats2table --subjects $base_filename --hemi lh --meas thickness --parc=aparc --tablefile=$WORKDIR/aparc_lh.csv
-aparcstats2table --subjects $base_filename --hemi rh --meas thickness --parc=aparc --tablefile=$WORKDIR/aparc_rh.csv
+aparcstats2table --subjects $SUBJ_ID --hemi lh --meas thickness --parc=aparc --tablefile=$WORKDIR/aparc_lh.csv
+aparcstats2table --subjects $SUBJ_ID --hemi rh --meas thickness --parc=aparc --tablefile=$WORKDIR/aparc_rh.csv
 
 # Step 5: Extract area measures
-aparcstats2table --subjects $base_filename --hemi lh --meas area --parc=aparc --tablefile=$WORKDIR/aparc_area_lh.csv
-aparcstats2table --subjects $base_filename --hemi rh --meas area --parc=aparc --tablefile=$WORKDIR/aparc_area_rh.csv
+aparcstats2table --subjects $SUBJ_ID --hemi lh --meas area --parc=aparc --tablefile=$WORKDIR/aparc_area_lh.csv
+aparcstats2table --subjects $SUBJ_ID --hemi rh --meas area --parc=aparc --tablefile=$WORKDIR/aparc_area_rh.csv
+
+#Copy the file under docs to the output directory
+cp $FLYWHEEL_BASE/docs/output-walkthrough.txt $OUTPUT_DIR/output-walkthrough.txt
 
 
 # Handle Exit status
