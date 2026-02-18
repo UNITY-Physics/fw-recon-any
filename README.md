@@ -1,24 +1,100 @@
-# recon-all-clinical
+# recon-any
 
-This gear runs recon-all-clinical which wraps SynthSR & SynthSeg tools ( https://github.com/BBillot/SynthSeg ) available in Freesurfer version 7.4.1. This is the out-of-the-box version that runs convolutiona neural networks for segmentation. 
+This gear runs recon-any from the development version of FreeSurfer, which performs automated brain segmentation, cortical surface reconstruction, and morphometric analysis from structural MRI data.
 
 ## Overview
 
 [Usage](#usage)
 
+[Outputs](#outputs)
+
 [FAQ](#faq)
 
-### Summary
-Takes an isotropic image and runs recon-all-clinical on it. The output includes a volume estimation, a QC file, a cortical thickness estimation, a parcelation file, and a Freesurfer archive zip.
+---
 
-The output file labels are based on the BIDS standard, taking the input file name and appending the appropriate suffixes. For example if the input file is `sub-01_ses-01_T1w.nii.gz`, the output files will be named `sub-01_ses-01_T1w_seg.nii.gz`, `sub-01_ses-01_T1w_vol.csv`, `sub-01_ses-01_T1w_qc.csv`, `sub-01_ses-01_T1w_thickness.csv`, `sub-01_ses-01_T1w_parcelation.nii.gz`, and `sub-01_ses-01_T1w_freesurfer.zip`.
+## Summary
 
-### Cite
+This gear takes a structural MRI (e.g., T1-weighted, isotropic image) and runs `recon-any` to generate cortical and subcortical segmentations, surface models, and regional morphometric measurements.
+
+`recon-any` is designed to be more flexible than traditional recon-all workflows and can operate across a wider range of contrasts and acquisition types while still producing FreeSurfer-compatible outputs.
+
+The primary outputs include:
+
+- Cortical and subcortical segmentation volumes
+- Surface reconstructions (white, pial, inflated)
+- Cortical thickness estimates
+- Regional volumetric statistics
+- Quality control outputs
+- A compressed FreeSurfer subjects directory archive
+
+---
+
+## Inputs
+
+- A structural MRI volume (preferably isotropic, NIfTI format recommended)
+- Image should be pre-aligned and skull-stripped if required (depending on workflow configuration)
+
+---
+
+## Outputs
+
+Output filenames follow BIDS-style conventions based on the input filename.
+
+For example, if the input file is:
+sub-01_ses-01_T1w.nii.gz
+
+
+The gear will generate outputs such as:
+
+- `sub-01_ses-01_T1w_seg.nii.gz` — segmentation volume
+- `sub-01_ses-01_T1w_vol.csv` — volumetric statistics
+- `sub-01_ses-01_T1w_thickness.csv` — cortical thickness summary
+- `sub-01_ses-01_T1w_parcellation.nii.gz` — cortical parcellation
+- `sub-01_ses-01_T1w_qc.csv` — quality control metrics
+- `sub-01_ses-01_T1w_freesurfer.zip` — compressed FreeSurfer output directory
+
+All outputs are also stored in FreeSurfer-compatible format inside the archived subjects directory.
+
+---
+
+## Usage
+
+This gear is intended to be run at the acquisition level on a structural MRI file.
+
+Recommended input characteristics:
+- Isotropic resolution (≤1.2 mm preferred)
+- Whole-brain coverage
+- Minimal motion artifacts
+
+Optional configuration parameters may include:
+- OpenMP thread count
+- Expert options file
+- Additional FreeSurfer flags
+
+---
+
+## Notes
+
+- Runtime depends on resolution and available CPU cores.
+- Memory usage scales with image resolution.
+- Outputs are compatible with downstream FreeSurfer tools and Flywheel workflows.
+
+---
+
+## Cite
+
+If using recon-any in published work, please cite:
+
+FreeSurfer:
+Fischl, B. (2012). FreeSurfer. NeuroImage, 62(2), 774–781.
+
+Additionally cite the specific FreeSurfer version used (v7.4.x).
+
+
 
 **license:**
 
 
-**url:** <https://github.com/Nialljb/fw-freeSurfer-clinical-gear>
 
 **cite:**  
 SynthSeg: Domain Randomisation for Segmentation of Brain MRI Scans of any Contrast and Resolution
@@ -168,3 +244,8 @@ Description of workflow
 
 [For more information about how to get started contributing to that gear,
 checkout [CONTRIBUTING.md](CONTRIBUTING.md).]
+
+
+Note: This gear uses the FreeSurfer development version. 
+Behavior and outputs may differ from stable releases (e.g., v7.4.x).
+Results may change as the development branch evolves.
