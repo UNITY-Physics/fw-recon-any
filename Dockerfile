@@ -106,7 +106,7 @@ COPY ./ ${FLYWHEEL}/
 COPY ./app/recon-any.sh ${FLYWHEEL}/app/recon-any.sh
 COPY ./app/recon-any.sh ${FREESURFER_HOME}/bin/recon-any.sh
 #COPY data files
-COPY data/ ${FLYWHEEL}/data/
+# COPY data/ ${FLYWHEEL}/data/
 
 # Set executable permissions
 RUN chmod +rx \

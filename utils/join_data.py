@@ -17,7 +17,6 @@ log = logging.getLogger(__name__)
 def housekeeping(demographics):
 
     acq = demographics['acquisition'].values[0]
-    sub = demographics['subject'].values[0]
     # -------------------  Concatenate the data  -------------------  #
 
     # Start with cortical thickness data
@@ -51,7 +50,9 @@ def housekeeping(demographics):
     filePath = '/flywheel/v0/work/synthseg.vol.csv'
     with open(filePath) as csv_file:
         vol_data = pd.read_csv(csv_file, index_col=None, header=0) 
-        vol_data = vol_data.drop('subject', axis=1)
+        #if the subject column is in the data, drop it because we already have the subject identifier from the demographics
+        if 'subject' in vol_data.columns:
+            vol_data = vol_data.drop('subject', axis=1)
     
     # smush the data together
     frames = [demographics, vol_data]
@@ -59,20 +60,6 @@ def housekeeping(demographics):
     out_name = f"{acq}_volume.csv"
     outdir = ('/flywheel/v0/output/' + out_name)
     df.to_csv(outdir)
-
-    # SynthSeg QC data
-    filePath = '/flywheel/v0/work/synthseg.qc.csv'
-    with open(filePath) as csv_file:
-        qc_data = pd.read_csv(csv_file, index_col=None, header=0) 
-        qc_data = qc_data.drop('subject', axis=1)
-
-    # smush the data together
-    frames = [demographics, qc_data]
-    df = pd.concat(frames, axis=1)
-    out_name = f"{acq}_qc.csv"
-    outdir = ('/flywheel/v0/output/' + out_name)
-    df.to_csv(outdir)
-    
 
     # Segmentation output
     synthSR_path = '/flywheel/v0/work/synthSR.nii.gz'
@@ -84,15 +71,3 @@ def housekeeping(demographics):
 
     shutil.copy(synthSR_path, SR_output)
     shutil.copy(aseg_path, aseg_output)
-
-    # # -------------------  Generate QC image  -------------------  #
-
-
-    # Run the render script to generate the QC image 
-
-    # # Construct the command to run your bash script with variables as arguments
-    # qc_command = f"/flywheel/v0/utils/render.sh '{subject_label}' '{session_label}' '{cleaned_string}' '{infant}'"
-
-    # # Execute the bash script
-    # subprocess.run(qc_command, shell=True)
-

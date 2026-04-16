@@ -1,6 +1,6 @@
 #! /bin/bash
 #
-# Run script for flywheel/recon-all-clinical Gear.
+# Run script for flywheel/recon-any Gear.
 #
 # Authorship: Anastasia Smirnova, Niall Bourke
 #
@@ -22,7 +22,7 @@ source /usr/local/freesurfer/SetUpFreeSurfer.sh
 echo "permissions"
 ls -ltra /flywheel/v0/
 
-mkdir $FLYWHEEL_BASE/work
+mkdir -p $FLYWHEEL_BASE/work
 chmod 777 $FLYWHEEL_BASE/work
 ##############################################################################
 # Parse configuration
@@ -76,7 +76,7 @@ fi
 # Run mri_synthseg algorithm
 
 # Set initial exit status
-recon_all_clinical_exit_status=0
+recon_any_exit_status=0
 
 
 if [[ $config_rob == 'true' ]]; then
@@ -88,37 +88,47 @@ if [[ -e $input_file ]]; then
   echo "Running recon-any..."
   
   tcsh /usr/local/freesurfer/bin/recon-any.sh -i $input_file -subjid $SUBJ_ID -threads 4 -side both -sdir $WORKDIR
-  recon_all_clinical_exit_status=$?
+  recon_any_exit_status=$?
 fi
 
 # Step 3: Copy output files to the output directory
 #mri_convert $WORKDIR/$base_filename/mri/synthseg.mgz $OUTPUT_DIR/synthseg.nii
-cp $WORKDIR/$SUBJ_ID/stats/synthseg.vol.csv $WORKDIR/synthseg.vol.csv
-cp $WORKDIR/$SUBJ_ID/stats/synthseg.qc.csv $WORKDIR/synthseg.qc.csv
-mri_convert --out_orientation RAS $WORKDIR/$SUBJ_ID/mri/synthSR.mgz $WORKDIR/synthSR.nii.gz
-mri_convert --out_orientation RAS $WORKDIR/$SUBJ_ID/mri/aparc+aseg.mgz $WORKDIR/aparc+aseg.nii.gz
-zip -r $OUTPUT_DIR/$SUBJ_ID.zip $WORKDIR/$SUBJ_ID
+echo "Copying output files to output directory..."
+zip -r $OUTPUT_DIR/$SUBJ_ID.zip $WORKDIR/
 
+# Post-processing: only run if recon-any succeeded
+if [[ $recon_any_exit_status == 0 ]]; then
 
-# Step 4: Extract cortical thickness measures
-# Set SUBJECTS_DIR to the work directory
-export SUBJECTS_DIR=$WORKDIR
-aparcstats2table --subjects $SUBJ_ID --hemi lh --meas thickness --parc=aparc --tablefile=$WORKDIR/aparc_lh.csv
-aparcstats2table --subjects $SUBJ_ID --hemi rh --meas thickness --parc=aparc --tablefile=$WORKDIR/aparc_rh.csv
+  # Step 1: Copy stats files to work directory
+  cp $WORKDIR/$SUBJ_ID/stats/SynthSeg.vols.csv $WORKDIR/synthseg.vol.csv
 
-# Step 5: Extract area measures
-aparcstats2table --subjects $SUBJ_ID --hemi lh --meas area --parc=aparc --tablefile=$WORKDIR/aparc_area_lh.csv
-aparcstats2table --subjects $SUBJ_ID --hemi rh --meas area --parc=aparc --tablefile=$WORKDIR/aparc_area_rh.csv
+  # Step 2: Convert output volumes to NIfTI
+  mri_convert --out_orientation RAS $WORKDIR/$SUBJ_ID/mri/SynthSR.mgz $WORKDIR/synthSR.nii.gz
+  mri_convert --out_orientation RAS $WORKDIR/$SUBJ_ID/mri/aparc+aseg.mgz $WORKDIR/aparc+aseg.nii.gz
 
-#Copy the file under docs to the output directory
-cp $FLYWHEEL_BASE/docs/output-walkthrough.txt $OUTPUT_DIR/output-walkthrough.txt
+  # Step 3: Zip the full subject folder
+  zip -r $OUTPUT_DIR/$SUBJ_ID.zip $WORKDIR/$SUBJ_ID
 
+  # Step 4: Extract cortical thickness measures
+  export SUBJECTS_DIR=$WORKDIR
+  aparcstats2table --subjects $SUBJ_ID --hemi lh --meas thickness --parc=aparc --tablefile=$WORKDIR/aparc_lh.csv
+  aparcstats2table --subjects $SUBJ_ID --hemi rh --meas thickness --parc=aparc --tablefile=$WORKDIR/aparc_rh.csv
 
-# Handle Exit status
-if [[ $recon_all_clinical_exit_status == 0 ]]; then
+  # Step 5: Extract area measures
+  aparcstats2table --subjects $SUBJ_ID --hemi lh --meas area --parc=aparc --tablefile=$WORKDIR/aparc_area_lh.csv
+  aparcstats2table --subjects $SUBJ_ID --hemi rh --meas area --parc=aparc --tablefile=$WORKDIR/aparc_area_rh.csv
+
   echo -e "${CONTAINER} Success!"
+
+  #Copy the file under docs to the output directory
+  cp $FLYWHEEL_BASE/docs/output-walkthrough.txt $OUTPUT_DIR/output-walkthrough.txt
+
   exit 0
+
 else
   echo "${CONTAINER}  Something went wrong! recon-any exited non-zero!"
   exit 1
 fi
+
+
+
