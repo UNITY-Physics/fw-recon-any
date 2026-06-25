@@ -26,7 +26,7 @@
     },
     "gear-builder": {
       "category": "analysis",
-      "image": "flywheel/recon-any:0.4.8"
+      "image": "flywheel/recon-any:0.4.19"
     },
     "kcl-app-binary": "app/main.sh",
     "kcl-app-modalities": [
@@ -49,10 +49,12 @@
   "description": "This gear implements out-of-the-box SynthSR & SynthSeg, the first convolutional neural network for segmentation of brain MRI scans of any contrast and resolution",
   "environment": {
     "CONDA_DIR": "/opt/conda",
+    "DEBIAN_FRONTEND": "noninteractive",
     "FLYWHEEL": "/flywheel/v0",
     "FMRI_ANALYSIS_DIR": "/usr/local/freesurfer/fsfast",
     "FREESURFER": "/usr/local/freesurfer",
     "FREESURFER_HOME": "/usr/local/freesurfer",
+    "FREESURFER_HOME_FSPYTHON": "/usr/local/freesurfer",
     "FSFAST_HOME": "/usr/local/freesurfer/fsfast",
     "FSF_OUTPUT_FORMAT": "nii.gz",
     "FSLDIR": "/opt/conda",
@@ -99,5 +101,5 @@
   "name": "recon-any",
   "source": "https://surfer.nmr.mgh.harvard.edu/fswiki/recon-any",
   "url": "https://surfer.nmr.mgh.harvard.edu/",
-  "version": "0.4.8"
+  "version": "0.4.19"
 }

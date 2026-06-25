@@ -86,15 +86,26 @@ fi
 # Run recon-any with options
 if [[ -e $input_file ]]; then
   echo "Running recon-any..."
-  
-  tcsh /usr/local/freesurfer/bin/recon-any.sh -i $input_file -subjid $SUBJ_ID -threads 4 -side both -sdir $WORKDIR
+
+  tcsh "$FREESURFER_HOME/bin/run_recon-any" \
+  -i "$input_file" \
+  -subjid "$SUBJ_ID" \
+  -threads 4 \
+  -side both \
+  -sdir "$WORKDIR"
+
   recon_any_exit_status=$?
 fi
 
 # Step 3: Copy output files to the output directory
-#mri_convert $WORKDIR/$base_filename/mri/synthseg.mgz $OUTPUT_DIR/synthseg.nii
 echo "Copying output files to output directory..."
+
 zip -r $OUTPUT_DIR/$SUBJ_ID.zip $WORKDIR/
+zip_exit=$?
+if [[ $zip_exit != 0 ]]; then
+  echo "zip failed with exit code $zip_exit"
+  # exit 1
+fi
 
 # Post-processing: only run if recon-any succeeded
 if [[ $recon_any_exit_status == 0 ]]; then
@@ -104,17 +115,14 @@ if [[ $recon_any_exit_status == 0 ]]; then
 
   # Step 2: Convert output volumes to NIfTI
   mri_convert --out_orientation RAS $WORKDIR/$SUBJ_ID/mri/SynthSR.mgz $WORKDIR/synthSR.nii.gz
-  mri_convert --out_orientation RAS $WORKDIR/$SUBJ_ID/mri/aparc+aseg.mgz $WORKDIR/aparc+aseg.nii.gz
+  mri_convert $WORKDIR/$SUBJ_ID/mri/aparc+aseg.mgz $WORKDIR/aparc+aseg.nii.gz
 
-  # Step 3: Zip the full subject folder
-  zip -r $OUTPUT_DIR/$SUBJ_ID.zip $WORKDIR/$SUBJ_ID
-
-  # Step 4: Extract cortical thickness measures
+  # Step 3: Extract cortical thickness measures
   export SUBJECTS_DIR=$WORKDIR
   aparcstats2table --subjects $SUBJ_ID --hemi lh --meas thickness --parc=aparc --tablefile=$WORKDIR/aparc_lh.csv
   aparcstats2table --subjects $SUBJ_ID --hemi rh --meas thickness --parc=aparc --tablefile=$WORKDIR/aparc_rh.csv
 
-  # Step 5: Extract area measures
+  # Step 4: Extract area measures
   aparcstats2table --subjects $SUBJ_ID --hemi lh --meas area --parc=aparc --tablefile=$WORKDIR/aparc_area_lh.csv
   aparcstats2table --subjects $SUBJ_ID --hemi rh --meas area --parc=aparc --tablefile=$WORKDIR/aparc_area_rh.csv
 
@@ -122,6 +130,9 @@ if [[ $recon_any_exit_status == 0 ]]; then
 
   #Copy the file under docs to the output directory
   cp $FLYWHEEL_BASE/docs/output-walkthrough.txt $OUTPUT_DIR/output-walkthrough.txt
+
+  # Step 5: NOW zip, so everything is included
+  zip -r $OUTPUT_DIR/$SUBJ_ID.zip $WORKDIR/
 
   exit 0
 

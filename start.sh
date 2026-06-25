@@ -25,4 +25,10 @@ fi
 # export DISPLAY=:99
 
 # Run the gear
-python3 -u /flywheel/v0/run.py
+timeout --kill-after=60s 6h python3 -u /flywheel/v0/run.py
+#python3 -u /flywheel/v0/run.py
+
+if [ $? -eq 124 ]; then
+    echo "ERROR: Job exceeded 24h walltime and was terminated."
+    exit 1
+fi

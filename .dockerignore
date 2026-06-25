@@ -1,0 +1,13 @@
+.git
+.gitignore
+.DS_Store
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+*.log
+output
+dist
+build
+recon-any-0.4.*
+docs

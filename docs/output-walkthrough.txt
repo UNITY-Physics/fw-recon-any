@@ -1,7 +1,15 @@
 Source: https://surfer.nmr.mgh.harvard.edu/fswiki/ReconAny
 
+Flywheel Outputs:
+*_aparc+aseg.nii.gz: this is the aseg with the refined cortex label from the placed surfaces,  but with parcellated cortical labels (according to 3 different atlases).
+*_synthSR.nii.gz : raw output of SynthSR.
+*_area.csv
+*_thickness.csv
+*_volume.csv
 
 Outputs:
+
+ZIPped folder:
 
 The directory structure is almost the same as recon-all, but with some minor changes in the SUBJECT_DIR/mri:
 
@@ -16,7 +24,6 @@ norm.mgz: generated intensity image with super-resolved cortex estimated from th
 brain.mgz: same as norm.mgz that is required for a number of subsequent processing steps of FreeSurfer.
 brainmask.mgz: same as norm.mgz that is required for a number of subsequent processing steps of FreeSurfer.
 wm.mgz and wm.seg.mgz: these are volumetric white matter masks used to initialize the surface placement.
-
 
 
 Post completion of the cortical surface stream, some of the results from the cortical stream are used to refine the results in the directory SUBJECT_DIR/mri:

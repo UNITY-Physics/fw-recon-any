@@ -57,9 +57,32 @@ def housekeeping(demographics):
     # smush the data together
     frames = [demographics, vol_data]
     df = pd.concat(frames, axis=1)
+
+    #Fix structure of the column names in the volume data to match the structure of the other dataframes
+    
+    
+    df.columns = df.columns.str.strip()
+    # Check which meta cols actually have values
+    meta_cols = ['subject', 'session', 'age', 'age_source', 'sex', 'acquisition', 'input_gear_v', 'scanner_software_v']
+    df[meta_cols] = df[meta_cols].ffill()
+
+    #If values in 'scanner_software_v' are lists, convert them to strings
+    if df['scanner_software_v'].apply(lambda x: isinstance(x, list)).any():
+        df['scanner_software_v'] = df['scanner_software_v'].apply(lambda x: ', '.join(x) if isinstance(x, list) else x)
+
+    # Only use meta cols that are not entirely NaN
+    valid_meta_cols = [c for c in meta_cols if df[c].notna().any()]
+   
+    df_wide = (
+        df[valid_meta_cols + ['structure-label', 'volume_in_cubic_mm']]
+        .pivot_table(index=valid_meta_cols, columns='structure-label', values='volume_in_cubic_mm')
+        .reset_index()
+    )
+    df_wide.columns.name = None
+
     out_name = f"{acq}_volume.csv"
     outdir = ('/flywheel/v0/output/' + out_name)
-    df.to_csv(outdir)
+    df_wide.to_csv(outdir)
 
     # Segmentation output
     synthSR_path = '/flywheel/v0/work/synthSR.nii.gz'
