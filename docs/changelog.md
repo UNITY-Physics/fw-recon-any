@@ -1,4 +1,9 @@
 # Changelog
+30/07/2026:
+Version 0.4.20_8.1.0:
+- Changed versioning to include Freesurfer's version, for clarity and provenance.
+- Added post-processing scripts written by Charlotte computing additional vertex-level and smoothed morphometric measures.
+
 20/04/2026:
 Version 0.4.13:
 - Fix volumetric output (pivot and have structure labels as columns instead of rows)

@@ -136,8 +136,10 @@ endif
 setenv INPUT_SCAN $INPUT_SCAN
 setenv SNAME $SUBJECT_ID
 setenv THREADS $THREADS
+setenv CPU $CPU
 setenv SIDE $SIDE
 setenv SUBJECTS_DIR $SUBJECT_DIR
+
 
 
 
@@ -304,7 +306,9 @@ echo " " |& tee -a $LogFile
 
 # Python code to do inference
 cd $SUBJECTS_DIR/$SNAME/mri
-set cmd="fspython $PYTHON_SCRIPT_DIR/inference.py --input_image ./native.mgz --output_dir ./ --model_path $MODEL_DIR --case_type $SIDE --cpu --threads $THREADS"
+#if CPU flag is set, we add --cpu to the command
+
+set cmd="fspython $PYTHON_SCRIPT_DIR/inference.py --input_image ./native.mgz --output_dir ./ --model_path $MODEL_DIR --case_type $SIDE --threads $THREADS"
 # Add --ct if CT_FLAG is true
 if ($CT_FLAG == "true") then
   set cmd="$cmd --ct"

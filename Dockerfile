@@ -17,6 +17,9 @@ ENV FREESURFER_HOME=/usr/local/freesurfer \
     FSF_OUTPUT_FORMAT=nii.gz \
     PATH=/usr/local/freesurfer/bin:/usr/local/freesurfer/fsfast/bin:/usr/local/freesurfer/tktools:/usr/local/freesurfer/mni/bin:/usr/local/bin:/usr/bin:/bin
 
+ENV NVIDIA_VISIBLE_DEVICES=all \
+    NVIDIA_DRIVER_CAPABILITIES=compute,utility
+
 WORKDIR ${FLYWHEEL}
 
 # Install OS packages
@@ -61,6 +64,11 @@ RUN wget -O /tmp/freesurfer.tar.gz \
     mkdir -p /usr/local && \
     tar -xzf /tmp/freesurfer.tar.gz -C /usr/local && \
     rm -f /tmp/freesurfer.tar.gz
+
+# Install CUDA-enabled PyTorch into fspython (replaces CPU-only torch bundled with FreeSurfer)
+RUN ${FREESURFER_HOME}/bin/fspython -m pip install --no-cache-dir \
+    torch torchvision \
+    --index-url https://download.pytorch.org/whl/cu121
 
 # Install recon-any models
 RUN wget -O /tmp/recon-any.tar.gz \
