@@ -26,7 +26,7 @@
     },
     "gear-builder": {
       "category": "analysis",
-      "image": "flywheel/recon-any:0.4.23_8.1.0"
+      "image": "flywheel/recon-any:0.4.22_8.1.0"
     },
     "kcl-app-binary": "app/main.sh",
     "kcl-app-modalities": [
@@ -109,7 +109,7 @@
     "PATH": "/usr/local/freesurfer/bin:/usr/local/freesurfer/fsfast/bin:/usr/local/freesurfer/tktools:/usr/local/freesurfer/mni/bin:/usr/local/bin:/usr/bin:/bin",
     "PERL5LIB": "/usr/local/freesurfer/mni/share/perl5",
     "PWD": "/flywheel/v0",
-    "PYTHONPATH": "/flywheel/v0:",
+    "PYTHONPATH": "/opt/pydeps/lib/python3.9/site-packages:",
     "PYTHON_GET_PIP_SHA256": "fa6f3fb93cce234cd4e8dd2beb54a51ab9c247653b52855a48dd44e6b21ff28b",
     "PYTHON_GET_PIP_URL": "https://github.com/pypa/get-pip/raw/c20b0cfd643cd4a19246ccf204e2997af70f6b21/public/get-pip.py",
     "PYTHON_PIP_VERSION": "21.2.3",
@@ -137,5 +137,5 @@
   "name": "recon-any",
   "source": "https://surfer.nmr.mgh.harvard.edu/fswiki/recon-any",
   "url": "https://github.com/UNITY-Physics/fw-recon-any",
-  "version": "0.4.23_8.1.0"
+  "version": "0.4.22_8.1.0"
 }
