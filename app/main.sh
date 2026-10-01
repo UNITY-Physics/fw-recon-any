@@ -86,24 +86,24 @@ fi
 # Run recon-any with options
 if [[ -e $input_file ]]; then
   echo "Running recon-any..."
-  # tcsh "$FREESURFER_HOME/bin/run_recon-any" \
-  # -i "$input_file" \
-  # -subjid "$SUBJ_ID" \
-  # -threads 4 \
-  # -side both \
-  # -sdir "$WORKDIR"
+  tcsh "$FREESURFER_HOME/bin/run_recon-any" \
+  -i "$input_file" \
+  -subjid "$SUBJ_ID" \
+  -threads 4 \
+  -side both \
+  -sdir "$WORKDIR"
 
-  echo "Copying run_recon-any to /tmp/run_recon-any-gpu"
-  cp "$FREESURFER_HOME/bin/run_recon-any" /tmp/run_recon-any-gpu
-  # Remove the --cpu flag
-  sed -i 's/--cpu //' /tmp/run_recon-any-gpu
-  echo "Running recon-any from /tmp/run_recon-any-gpu"
-  tcsh /tmp/run_recon-any-gpu \
-    -i "$input_file" \
-    -subjid "$SUBJ_ID" \
-    -threads 4 \
-    -side both \
-    -sdir "$WORKDIR"
+  # echo "Copying run_recon-any to /tmp/run_recon-any-gpu"
+  # cp "$FREESURFER_HOME/bin/run_recon-any" /tmp/run_recon-any-gpu
+  # # Remove the --cpu flag
+  # sed -i 's/--cpu //' /tmp/run_recon-any-gpu
+  # echo "Running recon-any from /tmp/run_recon-any-gpu"
+  # tcsh /tmp/run_recon-any-gpu \
+  #   -i "$input_file" \
+  #   -subjid "$SUBJ_ID" \
+  #   -threads 4 \
+  #   -side both \
+  #   -sdir "$WORKDIR"
 
   
 
@@ -142,8 +142,8 @@ if [[ $recon_any_exit_status == 0 ]]; then
   echo -e "${CONTAINER} Success!"
 
   echo -e "Computing additional vertex-level and smoothed morphometric measures"
-  bash "$FLYWHEEL_BASE/app/recon-any-post-qcache_100726_v1.sh" "$SUBJ_ID" "$WORKDIR"
 
+  bash "$FLYWHEEL_BASE/app/recon-any-post-qcache_atlasparc_070826_v11.sh" "$WORKDIR"
   bash "$FLYWHEEL_BASE/app/check-recon-any-post-qcache_report.sh"
 
   #Copy the file under docs to the output directory
